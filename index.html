@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CB4000 KPI Dashboard vJun 20 2026 05:30</title>
+<title>CB4000 KPI Dashboard vJun 20 2026 05:33</title>
 <meta http-equiv="refresh" content="300">
 <style>
   :root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#7d8590;
@@ -33,11 +33,15 @@
   <span class="hbadge">IAH3</span><span class="hbadge">RDU2</span>
   <span class="hbadge">VGT2</span><span class="hbadge">GYR3</span>
   <span class="hbadge">ORF2</span><span class="hbadge">LAS1</span>
-  <span class="hbadge live">&#x25CF; Jun 20 2026 05:30</span>
+  <span class="hbadge live">&#x25CF; Jun 20 2026 05:33</span>
   <span class="hbadge warn">Wk24 &#8212; IAH3 Worst Scan in Network</span>
   <span id="ts"></span>
 </header>
 <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+<div id="dtw-banner" style="display:none;align-items:center;justify-content:center;gap:10px;padding:10px 20px;background:#3b1219;border-bottom:2px solid #f85149;animation:dtw-blink 1.5s infinite;">
+  <span class="dtw-text" style="font-size:14px;font-weight:700;color:#f85149;letter-spacing:0.05em;"></span>
+</div>
+<style>@keyframes dtw-blink{0%,100%{opacity:1}50%{opacity:0.4}}</style>
 <div class="main">
   <div class="tabs"><button id="btn-0" class="tab-btn active" onclick="goTab(0)">Network</button>
 <button id="btn-1" class="tab-btn" onclick="goTab(1)">RDU2</button>
@@ -1963,13 +1967,40 @@ function goTab(n) {
     if (b) { b.classList.add('active'); }
 }
 
+// DTW Detection — show blinking banner during scheduled downtime windows
+(function() {
+    var now = new Date();
+    var h = now.getHours();
+    var m = now.getMinutes();
+    var mins = h * 60 + m;
+    // DTW windows: 5:30-6:30am (330-390) and 5:30-6:30pm (1050-1110)
+    var inDTW = (mins >= 330 && mins < 390) || (mins >= 1050 && mins < 1110);
+    // Also check if sorter is stopped (from LIVE_DATA)
+    var d = window.LIVE_DATA;
+    var sorterDown = d && d.sorter && d.sorter.Running === false;
+    var banner = document.getElementById('dtw-banner');
+    if (banner) {
+        if (inDTW || sorterDown) {
+            banner.style.display = 'flex';
+            if (inDTW) {
+                banner.querySelector('.dtw-text').textContent = 
+                    (mins < 720) ? '⚠️ SCHEDULED DTW — 5:30am-6:30am' : '⚠️ SCHEDULED DTW — 5:30pm-6:30pm';
+            } else {
+                banner.querySelector('.dtw-text').textContent = '⚠️ SORTER STOPPED — UNSCHEDULED DOWNTIME';
+            }
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+})();
+
   document.getElementById('ts').textContent = 'Updated: ' + new Date().toLocaleString();
 </script>
 <script>
-// Live PLC data injected at: 2026-06-20 05:33:15
+// Live PLC data injected at: 2026-06-20 05:33:35
 window.LIVE_DATA = {
   "site": "RDU2",
-  "timestamp": "2026-06-20 05:33:15",
+  "timestamp": "2026-06-20 05:33:35",
   "sorter": {
     "Running": false,
     "Speed": 0,
@@ -2038,12 +2069,12 @@ window.LIVE_DATA = {
   },
   "ppu_1": {
     "started": false,
-    "error": false,
+    "error": true,
     "warning": true
   },
   "ppu_2": {
     "started": false,
-    "error": false,
+    "error": true,
     "warning": false
   },
   "ppu_3": {
@@ -2058,13 +2089,13 @@ window.LIVE_DATA = {
   },
   "ppu_5": {
     "started": false,
-    "error": false,
+    "error": true,
     "warning": false
   },
   "ppu_6": {
     "started": false,
-    "error": false,
-    "warning": false
+    "error": true,
+    "warning": true
   },
   "weekly_raw": {
     "total_ftd": 2222754,
