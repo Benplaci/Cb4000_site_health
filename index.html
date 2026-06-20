@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CB4000 KPI Dashboard vJun 20 2026 05:33</title>
+<title>CB4000 KPI Dashboard vJun 20 2026 05:36</title>
 <meta http-equiv="refresh" content="300">
 <style>
   :root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#7d8590;
@@ -33,7 +33,7 @@
   <span class="hbadge">IAH3</span><span class="hbadge">RDU2</span>
   <span class="hbadge">VGT2</span><span class="hbadge">GYR3</span>
   <span class="hbadge">ORF2</span><span class="hbadge">LAS1</span>
-  <span class="hbadge live">&#x25CF; Jun 20 2026 05:33</span>
+  <span class="hbadge live">&#x25CF; Jun 20 2026 05:36</span>
   <span class="hbadge warn">Wk24 &#8212; IAH3 Worst Scan in Network</span>
   <span id="ts"></span>
 </header>
@@ -1975,19 +1975,26 @@ function goTab(n) {
     var mins = h * 60 + m;
     // DTW windows: 5:30-6:30am (330-390) and 5:30-6:30pm (1050-1110)
     var inDTW = (mins >= 330 && mins < 390) || (mins >= 1050 && mins < 1110);
+    // Break windows: 10:30-11am (630-660), 2-2:30pm (840-870), 10:30-11pm (1350-1380), 2-2:30am (120-150)
+    var inBreak = (mins >= 630 && mins < 660) || (mins >= 840 && mins < 870) || (mins >= 1350 && mins < 1380) || (mins >= 120 && mins < 150);
     // Also check if sorter is stopped (from LIVE_DATA)
     var d = window.LIVE_DATA;
     var sorterDown = d && d.sorter && d.sorter.Running === false;
     var banner = document.getElementById('dtw-banner');
     if (banner) {
-        if (inDTW || sorterDown) {
+        if (inDTW) {
             banner.style.display = 'flex';
-            if (inDTW) {
-                banner.querySelector('.dtw-text').textContent = 
-                    (mins < 720) ? '⚠️ SCHEDULED DTW — 5:30am-6:30am' : '⚠️ SCHEDULED DTW — 5:30pm-6:30pm';
-            } else {
-                banner.querySelector('.dtw-text').textContent = '⚠️ SORTER STOPPED — UNSCHEDULED DOWNTIME';
-            }
+            banner.querySelector('.dtw-text').textContent = 
+                (mins < 720) ? '⚠️ SCHEDULED DTW — 5:30am-6:30am' : '⚠️ SCHEDULED DTW — 5:30pm-6:30pm';
+        } else if (inBreak) {
+            banner.style.display = 'flex';
+            banner.style.background = '#2d2106';
+            banner.style.borderColor = '#d29922';
+            banner.querySelector('.dtw-text').style.color = '#d29922';
+            banner.querySelector('.dtw-text').textContent = '☕ BREAK WINDOW — sorter may be stopped';
+        } else if (sorterDown) {
+            banner.style.display = 'flex';
+            banner.querySelector('.dtw-text').textContent = '⚠️ SORTER STOPPED — UNSCHEDULED DOWNTIME';
         } else {
             banner.style.display = 'none';
         }
@@ -1997,10 +2004,10 @@ function goTab(n) {
   document.getElementById('ts').textContent = 'Updated: ' + new Date().toLocaleString();
 </script>
 <script>
-// Live PLC data injected at: 2026-06-20 05:33:35
+// Live PLC data injected at: 2026-06-20 05:36:10
 window.LIVE_DATA = {
   "site": "RDU2",
-  "timestamp": "2026-06-20 05:33:35",
+  "timestamp": "2026-06-20 05:36:10",
   "sorter": {
     "Running": false,
     "Speed": 0,
