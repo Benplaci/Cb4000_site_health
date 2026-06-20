@@ -30,7 +30,7 @@
 </style></head><body>
 <header>
   <h1>&#x26A1; IXD <span style="color:#58a6ff;">INSIGHTS</span></h1>
-  <span class="hbadge live">&#x25CF; 2026-06-20 17:34:30</span>
+  <span class="hbadge live">&#x25CF; 2026-06-20 17:35:33</span>
   <span id="ts"></span>
 </header>
 <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
@@ -2102,19 +2102,19 @@ function siteSub(n) {
   document.getElementById('ts').textContent = 'Updated: ' + new Date().toLocaleString();
 </script>
 <script>
-// Live PLC data injected at: 2026-06-20 17:34:30
+// Live PLC data injected at: 2026-06-20 17:35:33
 window.LIVE_DATA = {
   "site": "RDU2",
-  "timestamp": "2026-06-20 17:34:30",
+  "timestamp": "2026-06-20 17:35:33",
   "sorter": {
-    "Running": true,
-    "Speed": 2387,
+    "Running": false,
+    "Speed": 0,
     "SortationAllowed": false,
-    "Error": false,
+    "Error": true,
     "AWCS_Communication_Lost": false,
     "RoutingMasterChannel0Activated": true,
     "SortedSingle": 730086,
-    "Recirculation": 10309
+    "Recirculation": 10312
   },
   "carriers": {
     "OEE_TotalCarriers_Faulted": 139,
@@ -2177,34 +2177,34 @@ window.LIVE_DATA = {
     "ClockFaultCarrier": 420
   },
   "ppu_1": {
-    "started": true,
-    "error": false,
-    "warning": false
+    "started": false,
+    "error": true,
+    "warning": true
   },
   "ppu_2": {
-    "started": true,
-    "error": false,
+    "started": false,
+    "error": true,
     "warning": false
   },
   "ppu_3": {
-    "started": true,
+    "started": false,
     "error": false,
     "warning": false
   },
   "ppu_4": {
-    "started": true,
+    "started": false,
     "error": false,
     "warning": false
   },
   "ppu_5": {
-    "started": true,
-    "error": false,
+    "started": false,
+    "error": true,
     "warning": false
   },
   "ppu_6": {
-    "started": true,
-    "error": false,
-    "warning": false
+    "started": false,
+    "error": true,
+    "warning": true
   },
   "weekly_raw": {
     "total_ftd": 2229088,
@@ -2222,7 +2222,7 @@ window.LIVE_DATA = {
     "scan_defect_pct": 6.1,
     "fpy_pct": 90.0
   },
-  "stop_reason": null
+  "stop_reason": "Device Fault: UPS0175573"
 };
 </script>
 </body></html>
