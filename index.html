@@ -1,1 +1,285 @@
-<html><body><h1>CB4000 Dashboard - Setting up...</h1><p>First data push in progress. Refresh in 5 minutes.</p></body></html>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CB4000 RDU2 — Live Sorter Dashboard</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#7d8590;--green:#3fb950;--yellow:#d29922;--red:#f85149;--blue:#58a6ff;--orange:#ffa657}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',monospace;font-size:13px;padding:16px}
+header{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{font-size:16px;font-weight:700;color:var(--blue)}
+.badge{background:#21262d;border:1px solid var(--border);border-radius:12px;padding:3px 10px;font-size:11px;color:var(--muted)}
+.badge.live{border-color:var(--green);color:var(--green)}
+.badge.warn{border-color:var(--red);color:var(--red)}
+#ts{margin-left:auto;color:var(--muted);font-size:11px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.kpi-label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.kpi-value{font-size:28px;font-weight:700;line-height:1}
+.kpi-sub{color:var(--muted);font-size:10px;margin-top:3px}
+.green{color:var(--green)}.yellow{color:var(--yellow)}.red{color:var(--red)}.blue{color:var(--blue)}.orange{color:var(--orange)}
+.section{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px}
+.card h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{color:var(--muted);text-align:left;padding:5px 8px;font-weight:500;border-bottom:1px solid var(--border);font-size:11px}
+td{padding:5px 8px;border-bottom:1px solid #1c2128}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.bar-label{width:60px;font-size:11px;color:var(--muted);text-align:right}
+.bar-track{flex:1;height:9px;background:#21262d;border-radius:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;transition:width 1s}
+.bar-val{width:50px;font-size:11px}
+.alert{padding:8px 10px;border-radius:6px;margin-bottom:7px;font-size:12px;display:flex;gap:7px}
+.alert-red{background:#3b1219;border-left:3px solid var(--red)}
+.alert-yellow{background:#2d2106;border-left:3px solid var(--yellow)}
+.alert-green{background:#0d2117;border-left:3px solid var(--green)}
+@media(max-width:900px){.section{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header>
+<h1>CB4000 RDU2 Live Dashboard</h1>
+<span class="badge live" id="status-badge">LOADING</span>
+<span class="badge" id="speed-badge">—</span>
+<span class="badge" id="faulted-badge">—</span>
+<span id="ts">—</span>
+</header>
+
+<div class="grid" id="kpi-grid">
+<div class="kpi"><div class="kpi-label">Sorter Status</div><div class="kpi-value" id="kpi-status">—</div><div class="kpi-sub" id="kpi-speed-sub">—</div></div>
+<div class="kpi"><div class="kpi-label">Faulted Carriers</div><div class="kpi-value red" id="kpi-faulted">—</div><div class="kpi-sub" id="kpi-disabled-sub">—</div></div>
+<div class="kpi"><div class="kpi-label">Available</div><div class="kpi-value blue" id="kpi-available">—</div><div class="kpi-sub">of 2,340 total</div></div>
+<div class="kpi"><div class="kpi-label">Active Strays</div><div class="kpi-value orange" id="kpi-strays">—</div><div class="kpi-sub" id="kpi-strays-sub">on loop</div></div>
+<div class="kpi"><div class="kpi-label">MaxRecirc</div><div class="kpi-value" id="kpi-maxrecirc">—</div><div class="kpi-sub" id="kpi-maxrecirc-sub">target=5</div></div>
+<div class="kpi"><div class="kpi-label">Clock Fault</div><div class="kpi-value yellow" id="kpi-clock">—</div><div class="kpi-sub">carrier #</div></div>
+</div>
+
+<div class="section">
+<div class="card">
+<h3>Scanner Health (Weekly NR%)</h3>
+<div id="scanner-bars">—</div>
+</div>
+<div class="card">
+<h3>WPT CTB/CRB Faults</h3>
+<div id="wpt-list">—</div>
+</div>
+</div>
+
+<div class="section">
+<div class="card">
+<h3>PPU Status (1-6)</h3>
+<div id="ppu-list">—</div>
+</div>
+<div class="card">
+<h3>System Config</h3>
+<table>
+<tr><td>PLC IP</td><td><code>10.8.188.183</code></td></tr>
+<tr><td>ICW DB</td><td><code>10.8.188.25</code></td></tr>
+<tr><td>Carriers Total</td><td>2,340</td></tr>
+<tr><td>Update Interval</td><td>5 min</td></tr>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3>Alerts</h3>
+<div id="alerts">Waiting for data...</div>
+</div>
+
+<script>
+// Live data is injected by run_once.py as window.LIVE_DATA
+document.addEventListener('DOMContentLoaded', function() {
+  var d = window.LIVE_DATA;
+  if (!d) { document.getElementById('ts').textContent = 'No data yet'; return; }
+
+  document.getElementById('ts').textContent = 'Updated: ' + d.timestamp;
+
+  // Sorter state
+  var running = d.sorter.Running;
+  var speed = d.sorter.Speed || 0;
+  document.getElementById('kpi-status').textContent = running ? 'RUNNING' : 'STOPPED';
+  document.getElementById('kpi-status').className = 'kpi-value ' + (running ? 'green' : 'red');
+  document.getElementById('kpi-speed-sub').textContent = speed + ' mm/s';
+  document.getElementById('status-badge').textContent = running ? 'RUNNING' : 'STOPPED';
+  document.getElementById('status-badge').className = 'badge ' + (running ? 'live' : 'warn');
+  document.getElementById('speed-badge').textContent = speed + ' mm/s';
+
+  // Carriers
+  var faulted = d.carriers.OEE_TotalCarriers_Faulted || 0;
+  var disabled = d.carriers.OEE_TotalCarriers_Disabled || 0;
+  var available = d.carriers.OEE_TotalCar_Available || 0;
+  document.getElementById('kpi-faulted').textContent = faulted;
+  document.getElementById('kpi-disabled-sub').textContent = disabled + ' disabled';
+  document.getElementById('kpi-available').textContent = available;
+  document.getElementById('faulted-badge').textContent = faulted + ' faulted';
+  document.getElementById('faulted-badge').className = 'badge ' + (faulted > 50 ? 'warn' : '');
+
+  // Strays
+  var strays = d.strays.active ? d.strays.active.length : 0;
+  document.getElementById('kpi-strays').textContent = strays;
+
+  // Config
+  var maxR = d.config['AdjGeneral.MaxRecirc'];
+  document.getElementById('kpi-maxrecirc').textContent = maxR !== undefined ? maxR : '?';
+  document.getElementById('kpi-maxrecirc').className = 'kpi-value ' + (maxR === 5 ? 'green' : 'red');
+
+  var clock = d.config['ClockFaultCarrier'];
+  document.getElementById('kpi-clock').textContent = clock ? 'CA' + String(clock).padStart(4,'0') : 'None';
+
+  // Scanners
+  var sHtml = '';
+  var scannerNames = {0:'Scn 0',1:'Scn 1',3:'Scn 3',4:'Scn 4'};
+  for (var k in d.scanners) {
+    var s = d.scanners[k];
+    var pct = s.nr_pct;
+    var color = pct > 5.5 ? 'var(--red)' : pct > 3 ? 'var(--yellow)' : 'var(--green)';
+    var cls = pct > 5.5 ? 'red' : pct > 3 ? 'yellow' : 'green';
+    sHtml += '<div class="bar-row"><span class="bar-label">' + (scannerNames[k]||'Scn '+k) + '</span>';
+    sHtml += '<div class="bar-track"><div class="bar-fill" style="width:' + Math.min(pct*10,100) + '%;background:' + color + '"></div></div>';
+    sHtml += '<span class="bar-val ' + cls + '">' + pct + '%</span></div>';
+  }
+  document.getElementById('scanner-bars').innerHTML = sHtml || 'No data';
+
+  // WPT faults
+  var wf = d.wpt.faulted || [];
+  if (wf.length === 0) {
+    document.getElementById('wpt-list').innerHTML = '<div class="alert alert-green">All 16 CTBs OK</div>';
+  } else {
+    var wHtml = '';
+    wf.forEach(function(f) { wHtml += '<div class="alert alert-red">CTB ' + f.idx + ' — carrier ' + (f.carrier||'?') + '</div>'; });
+    document.getElementById('wpt-list').innerHTML = wHtml;
+  }
+
+  // PPU
+  var ppuHtml = '';
+  for (var i = 1; i <= 6; i++) {
+    var p = d['ppu_' + i];
+    if (!p) continue;
+    var st = p.error ? 'ERROR' : p.warning ? 'WARNING' : p.started ? 'OK' : 'OFF';
+    var cls2 = p.error ? 'red' : p.warning ? 'yellow' : 'green';
+    ppuHtml += '<span style="display:inline-block;margin:3px 8px 3px 0;font-size:12px" class="' + cls2 + '">PPU ' + i + ': ' + st + '</span>';
+  }
+  document.getElementById('ppu-list').innerHTML = ppuHtml || 'No data';
+
+  // Alerts
+  var alerts = [];
+  if (faulted > 50) alerts.push('<div class="alert alert-red">' + faulted + ' faulted carriers — pull MCBs to service platform</div>');
+  if (strays > 0) alerts.push('<div class="alert alert-yellow">' + strays + ' stray items on loop — walk loop, remove physically</div>');
+  if (maxR !== 5) alerts.push('<div class="alert alert-red">MaxRecirc = ' + maxR + ' (should be 5) — update ICW config</div>');
+  if (wf.length > 0) alerts.push('<div class="alert alert-yellow">' + wf.length + ' WPT CTB faults — inspect IR units</div>');
+  if (!running) alerts.push('<div class="alert alert-red">SORTER STOPPED — check start permissives</div>');
+  document.getElementById('alerts').innerHTML = alerts.length ? alerts.join('') : '<div class="alert alert-green">No critical alerts</div>';
+});
+</script>
+
+<script>
+// Live PLC data injected at: 2026-06-20 01:34:47
+window.LIVE_DATA = {
+  "site": "RDU2",
+  "timestamp": "2026-06-20 01:34:47",
+  "sorter": {
+    "Running": true,
+    "Speed": 2406,
+    "SortationAllowed": true,
+    "Error": false,
+    "AWCS_Communication_Lost": false,
+    "RoutingMasterChannel0Activated": true,
+    "SortedSingle": 639724,
+    "Recirculation": 8731
+  },
+  "carriers": {
+    "OEE_TotalCarriers_Faulted": 155,
+    "OEE_TotalCarriers_Disabled": 35,
+    "OEE_TotalCar_Available": 2150
+  },
+  "scanners": {
+    "0": {
+      "good": 606819,
+      "noread": 44777,
+      "nr_pct": 6.9
+    },
+    "1": {
+      "good": 648784,
+      "noread": 37019,
+      "nr_pct": 5.4
+    },
+    "3": {
+      "good": 660350,
+      "noread": 36537,
+      "nr_pct": 5.2
+    },
+    "4": {
+      "good": 668711,
+      "noread": 43727,
+      "nr_pct": 6.1
+    }
+  },
+  "wpt": {
+    "faulted": [
+      {
+        "idx": 1,
+        "carrier": 1808
+      },
+      {
+        "idx": 13,
+        "carrier": 380
+      }
+    ]
+  },
+  "strays": {
+    "active": [
+      {
+        "idx": 1,
+        "DistTrays": 1076
+      },
+      {
+        "idx": 4,
+        "DistTrays": 2211
+      },
+      {
+        "idx": 5,
+        "DistTrays": 2332
+      }
+    ]
+  },
+  "config": {
+    "AdjGeneral.MaxRecirc": 5,
+    "AdjGeneral.MaxRecircDest": 700,
+    "ClockFaultCarrier": 327
+  },
+  "ppu_1": {
+    "started": true,
+    "error": false,
+    "warning": false
+  },
+  "ppu_2": {
+    "started": true,
+    "error": false,
+    "warning": false
+  },
+  "ppu_3": {
+    "started": true,
+    "error": false,
+    "warning": false
+  },
+  "ppu_4": {
+    "started": true,
+    "error": false,
+    "warning": false
+  },
+  "ppu_5": {
+    "started": true,
+    "error": false,
+    "warning": false
+  },
+  "ppu_6": {
+    "started": true,
+    "error": false,
+    "warning": false
+  }
+};
+</script>
+</body>
+</html>
