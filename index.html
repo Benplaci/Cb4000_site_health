@@ -35,10 +35,10 @@ h1{font-size:18px;font-weight:700;color:var(--blue);margin-bottom:4px}
 .ppu-ip{font-size:9px;color:var(--muted);margin-top:4px;font-family:monospace}
 
 /* WPT Grid */
-.wpt-grid{display:grid;grid-template-columns:repeat(16,1fr);gap:4px;margin-bottom:16px}
-.wpt-cell{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 4px;text-align:center;min-width:0}
-.wpt-cell.ok{border-color:#1f3a24}
-.wpt-cell.fault{border-color:var(--red);background:#1a0f14}
+.wpt-grid{display:grid;grid-template-columns:repeat(16,1fr);gap:6px;margin-bottom:16px}
+.wpt-cell{background:var(--card);border:3px solid var(--border);border-radius:50%;padding:10px 4px;text-align:center;min-width:0;width:60px;height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto}
+.wpt-cell.ok{border-color:var(--green);box-shadow:0 0 6px rgba(63,185,80,0.3)}
+.wpt-cell.fault{border-color:var(--red);background:#1a0f14;box-shadow:0 0 6px rgba(248,81,73,0.4)}
 .wpt-idx{font-size:9px;color:var(--muted);margin-bottom:2px}
 .wpt-icon{font-size:14px;font-weight:700;margin-bottom:2px}
 .wpt-detail{font-size:8px;color:var(--muted)}
@@ -243,56 +243,52 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-// Live PLC data injected at: 2026-06-20 01:57:43
+// Live PLC data injected at: 2026-06-20 02:10:26
 window.LIVE_DATA = {
   "site": "RDU2",
-  "timestamp": "2026-06-20 01:57:43",
+  "timestamp": "2026-06-20 02:10:26",
   "sorter": {
-    "Running": true,
-    "Speed": 2412,
-    "SortationAllowed": true,
-    "Error": false,
+    "Running": false,
+    "Speed": 0,
+    "SortationAllowed": false,
+    "Error": true,
     "AWCS_Communication_Lost": false,
     "RoutingMasterChannel0Activated": true,
-    "SortedSingle": 641801,
-    "Recirculation": 8798
+    "SortedSingle": 641953,
+    "Recirculation": 8869
   },
   "carriers": {
-    "OEE_TotalCarriers_Faulted": 112,
+    "OEE_TotalCarriers_Faulted": 102,
     "OEE_TotalCarriers_Disabled": 35,
-    "OEE_TotalCar_Available": 2193
+    "OEE_TotalCar_Available": 2203
   },
   "scanners": {
     "0": {
-      "good": 609846,
-      "noread": 44904,
+      "good": 610129,
+      "noread": 44920,
       "nr_pct": 6.9
     },
     "1": {
-      "good": 651888,
-      "noread": 37150,
+      "good": 652212,
+      "noread": 37168,
       "nr_pct": 5.4
     },
     "3": {
-      "good": 663311,
-      "noread": 36674,
+      "good": 663697,
+      "noread": 36689,
       "nr_pct": 5.2
     },
     "4": {
-      "good": 671742,
-      "noread": 43847,
+      "good": 672083,
+      "noread": 43863,
       "nr_pct": 6.1
     }
   },
   "wpt": {
     "faulted": [
       {
-        "idx": 1,
-        "carrier": 294
-      },
-      {
         "idx": 13,
-        "carrier": 1207
+        "carrier": 1782
       }
     ]
   },
@@ -315,39 +311,40 @@ window.LIVE_DATA = {
   "config": {
     "AdjGeneral.MaxRecirc": 5,
     "AdjGeneral.MaxRecircDest": 700,
-    "ClockFaultCarrier": 327
+    "ClockFaultCarrier": 420
   },
   "ppu_1": {
-    "started": true,
-    "error": false,
-    "warning": false
+    "started": false,
+    "error": true,
+    "warning": true
   },
   "ppu_2": {
-    "started": true,
-    "error": false,
+    "started": false,
+    "error": true,
     "warning": false
   },
   "ppu_3": {
-    "started": true,
+    "started": false,
     "error": false,
     "warning": false
   },
   "ppu_4": {
-    "started": true,
+    "started": false,
     "error": false,
     "warning": false
   },
   "ppu_5": {
-    "started": true,
-    "error": false,
+    "started": false,
+    "error": true,
     "warning": false
   },
   "ppu_6": {
-    "started": true,
-    "error": false,
-    "warning": false
+    "started": false,
+    "error": true,
+    "warning": true
   }
 };
 </script>
 </body>
 </html>
+
