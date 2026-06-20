@@ -33,7 +33,7 @@
   <span class="hbadge">IAH3</span><span class="hbadge">RDU2</span>
   <span class="hbadge">VGT2</span><span class="hbadge">GYR3</span>
   <span class="hbadge">ORF2</span><span class="hbadge">LAS1</span>
-  <span class="hbadge live">&#x25CF; 2026-06-20 16:32:20</span>
+  <span class="hbadge live">&#x25CF; 2026-06-20 16:32:40</span>
   <span class="hbadge warn">Wk24 &#8212; IAH3 Worst Scan in Network</span>
   <span id="ts"></span>
 </header>
@@ -2105,19 +2105,19 @@ function rdu2Sub(n) {
   document.getElementById('ts').textContent = 'Updated: ' + new Date().toLocaleString();
 </script>
 <script>
-// Live PLC data injected at: 2026-06-20 16:32:20
+// Live PLC data injected at: 2026-06-20 16:32:40
 window.LIVE_DATA = {
   "site": "RDU2",
-  "timestamp": "2026-06-20 16:32:20",
+  "timestamp": "2026-06-20 16:32:40",
   "sorter": {
     "Running": true,
-    "Speed": 2401,
+    "Speed": 2408,
     "SortationAllowed": true,
     "Error": false,
     "AWCS_Communication_Lost": false,
     "RoutingMasterChannel0Activated": true,
-    "SortedSingle": 726150,
-    "Recirculation": 10189
+    "SortedSingle": 726193,
+    "Recirculation": 10190
   },
   "carriers": {
     "OEE_TotalCarriers_Faulted": 111,
@@ -2126,35 +2126,31 @@ window.LIVE_DATA = {
   },
   "scanners": {
     "0": {
-      "good": 692443,
-      "noread": 49684,
+      "good": 692494,
+      "noread": 49688,
       "nr_pct": 6.7
     },
     "1": {
-      "good": 739192,
-      "noread": 42004,
+      "good": 739244,
+      "noread": 42006,
       "nr_pct": 5.4
     },
     "3": {
-      "good": 752628,
-      "noread": 41731,
+      "good": 752681,
+      "noread": 41734,
       "nr_pct": 5.3
     },
     "4": {
-      "good": 765643,
-      "noread": 49497,
+      "good": 765699,
+      "noread": 49504,
       "nr_pct": 6.1
     }
   },
   "wpt": {
     "faulted": [
       {
-        "idx": 1,
-        "carrier": 857
-      },
-      {
         "idx": 13,
-        "carrier": 1769
+        "carrier": 1849
       }
     ]
   },
@@ -2210,17 +2206,17 @@ window.LIVE_DATA = {
     "warning": false
   },
   "weekly_raw": {
-    "total_ftd": 2228510,
-    "total_good": 2724954,
-    "total_noread": 182916,
-    "total_good_scan": 2949914
+    "total_ftd": 2228513,
+    "total_good": 2724999,
+    "total_noread": 182932,
+    "total_good_scan": 2950125
   },
   "weekly_delta": {
     "week": "Wk25",
-    "ftd": 5852,
-    "good": 54149,
-    "noread": 33084,
-    "good_scan": 517746,
+    "ftd": 5855,
+    "good": 54194,
+    "noread": 33100,
+    "good_scan": 517957,
     "ftd_pct": 9.8,
     "scan_defect_pct": 6.0,
     "fpy_pct": 90.2
