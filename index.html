@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CB4000 KPI Dashboard vJun 20 2026 05:36</title>
+<title>CB4000 KPI Dashboard vJun 20 2026 05:39</title>
 <meta http-equiv="refresh" content="300">
 <style>
   :root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#7d8590;
@@ -33,12 +33,12 @@
   <span class="hbadge">IAH3</span><span class="hbadge">RDU2</span>
   <span class="hbadge">VGT2</span><span class="hbadge">GYR3</span>
   <span class="hbadge">ORF2</span><span class="hbadge">LAS1</span>
-  <span class="hbadge live">&#x25CF; Jun 20 2026 05:36</span>
+  <span class="hbadge live">&#x25CF; Jun 20 2026 05:39</span>
   <span class="hbadge warn">Wk24 &#8212; IAH3 Worst Scan in Network</span>
   <span id="ts"></span>
 </header>
 <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
-<div id="dtw-banner" style="display:none;align-items:center;justify-content:center;gap:10px;padding:10px 20px;background:#3b1219;border-bottom:2px solid #f85149;animation:dtw-blink 1.5s infinite;">
+<div id="dtw-banner" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 20px;background:#0d2117;border-bottom:2px solid #3fb950;">
   <span class="dtw-text" style="font-size:14px;font-weight:700;color:#f85149;letter-spacing:0.05em;"></span>
 </div>
 <style>@keyframes dtw-blink{0%,100%{opacity:1}50%{opacity:0.4}}</style>
@@ -1982,21 +1982,36 @@ function goTab(n) {
     var sorterDown = d && d.sorter && d.sorter.Running === false;
     var banner = document.getElementById('dtw-banner');
     if (banner) {
-        if (inDTW) {
+        var txt = banner.querySelector('.dtw-text');
+        if (inDTW || inBreak) {
+            // Scheduled DTW or break — flashing blue
             banner.style.display = 'flex';
-            banner.querySelector('.dtw-text').textContent = 
-                (mins < 720) ? '⚠️ SCHEDULED DTW — 5:30am-6:30am' : '⚠️ SCHEDULED DTW — 5:30pm-6:30pm';
-        } else if (inBreak) {
-            banner.style.display = 'flex';
-            banner.style.background = '#2d2106';
-            banner.style.borderColor = '#d29922';
-            banner.querySelector('.dtw-text').style.color = '#d29922';
-            banner.querySelector('.dtw-text').textContent = '☕ BREAK WINDOW — sorter may be stopped';
+            banner.style.background = '#0d1f3a';
+            banner.style.borderColor = '#58a6ff';
+            banner.style.animation = 'dtw-blink 1.5s infinite';
+            txt.style.color = '#58a6ff';
+            if (inDTW) {
+                txt.textContent = (mins < 720) ? '🔵 SCHEDULED DTW — 5:30am-6:30am' : '🔵 SCHEDULED DTW — 5:30pm-6:30pm';
+            } else {
+                txt.textContent = '🔵 BREAK WINDOW';
+            }
         } else if (sorterDown) {
+            // Unscheduled — flashing red with fault reason
             banner.style.display = 'flex';
-            banner.querySelector('.dtw-text').textContent = '⚠️ SORTER STOPPED — UNSCHEDULED DOWNTIME';
+            banner.style.background = '#3b1219';
+            banner.style.borderColor = '#f85149';
+            banner.style.animation = 'dtw-blink 1s infinite';
+            txt.style.color = '#f85149';
+            var reason = (d && d.stop_reason) ? d.stop_reason : 'UNKNOWN FAULT';
+            txt.textContent = '🔴 SORTER STOPPED — ' + reason;
         } else {
-            banner.style.display = 'none';
+            // Running normally — solid green
+            banner.style.display = 'flex';
+            banner.style.background = '#0d2117';
+            banner.style.borderColor = '#3fb950';
+            banner.style.animation = 'none';
+            txt.style.color = '#3fb950';
+            txt.textContent = '🟢 SORTER RUNNING';
         }
     }
 })();
@@ -2004,10 +2019,10 @@ function goTab(n) {
   document.getElementById('ts').textContent = 'Updated: ' + new Date().toLocaleString();
 </script>
 <script>
-// Live PLC data injected at: 2026-06-20 05:36:10
+// Live PLC data injected at: 2026-06-20 05:39:27
 window.LIVE_DATA = {
   "site": "RDU2",
-  "timestamp": "2026-06-20 05:36:10",
+  "timestamp": "2026-06-20 05:39:27",
   "sorter": {
     "Running": false,
     "Speed": 0,
@@ -2119,7 +2134,8 @@ window.LIVE_DATA = {
     "ftd_pct": 17.6,
     "scan_defect_pct": 6.3,
     "fpy_pct": 82.4
-  }
+  },
+  "stop_reason": "Device Fault: UPS0175573"
 };
 </script>
 </body></html>
