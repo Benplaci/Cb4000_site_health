@@ -2025,52 +2025,56 @@ function goTab(n) {
   document.getElementById('ts').textContent = 'Updated: ' + new Date().toLocaleString();
 </script>
 <script>
-// Live PLC data injected at: 2026-06-20 15:42:25
+// Live PLC data injected at: 2026-06-20 15:43:28
 window.LIVE_DATA = {
   "site": "RDU2",
-  "timestamp": "2026-06-20 15:42:25",
+  "timestamp": "2026-06-20 15:43:28",
   "sorter": {
     "Running": true,
-    "Speed": 2391,
+    "Speed": 2418,
     "SortationAllowed": true,
     "Error": false,
     "AWCS_Communication_Lost": false,
     "RoutingMasterChannel0Activated": true,
-    "SortedSingle": 720671,
+    "SortedSingle": 720760,
     "Recirculation": 10091
   },
   "carriers": {
-    "OEE_TotalCarriers_Faulted": 112,
+    "OEE_TotalCarriers_Faulted": 107,
     "OEE_TotalCarriers_Disabled": 36,
-    "OEE_TotalCar_Available": 2192
+    "OEE_TotalCar_Available": 2197
   },
   "scanners": {
     "0": {
-      "good": 685629,
-      "noread": 49127,
+      "good": 685794,
+      "noread": 49136,
       "nr_pct": 6.7
     },
     "1": {
-      "good": 732067,
-      "noread": 41436,
+      "good": 732192,
+      "noread": 41452,
       "nr_pct": 5.4
     },
     "3": {
-      "good": 745309,
-      "noread": 41175,
+      "good": 745483,
+      "noread": 41189,
       "nr_pct": 5.2
     },
     "4": {
-      "good": 758183,
-      "noread": 48844,
+      "good": 758356,
+      "noread": 48857,
       "nr_pct": 6.1
     }
   },
   "wpt": {
     "faulted": [
       {
+        "idx": 1,
+        "carrier": 826
+      },
+      {
         "idx": 13,
-        "carrier": 1487
+        "carrier": 1738
       }
     ]
   },
@@ -2126,17 +2130,17 @@ window.LIVE_DATA = {
     "warning": false
   },
   "weekly_raw": {
-    "total_ftd": 2227981,
-    "total_good": 2720383,
-    "total_noread": 180582,
-    "total_good_scan": 2921193
+    "total_ftd": 2227987,
+    "total_good": 2720464,
+    "total_noread": 180635,
+    "total_good_scan": 2921829
   },
   "weekly_delta": {
     "week": "Wk25",
-    "ftd": 5323,
-    "good": 49578,
-    "noread": 30750,
-    "good_scan": 489025,
+    "ftd": 5329,
+    "good": 49659,
+    "noread": 30803,
+    "good_scan": 489661,
     "ftd_pct": 9.7,
     "scan_defect_pct": 5.9,
     "fpy_pct": 90.3
